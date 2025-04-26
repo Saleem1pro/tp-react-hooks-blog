@@ -17,6 +17,11 @@ function PostSearch({
 }) {
   const [searchInput, setSearchInput] = useState('');
   
+  const handleClearSearch = () => {
+    setSearchInput('');
+    onSearch('');
+  };
+
   // TODO: Exercice 3 - Utiliser le hook useTheme
   
   // TODO: Exercice 3 - Utiliser useCallback pour optimiser le gestionnaire
@@ -46,6 +51,16 @@ function PostSearch({
               aria-label="Rechercher"
             />
             {/* TODO: Exercice 1 - Ajouter le bouton pour effacer la recherche */}
+            {searchInput && (
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={handleClearSearch}
+                aria-label="Effacer la recherche"
+              >
+                <i className="bi bi-x-lg">Effacer la recherche</i>
+              </button>
+            )}
           </div>
         </div>
         
