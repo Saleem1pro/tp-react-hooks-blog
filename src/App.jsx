@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import './App.css';
-import PostList from './components/PostList';
-import PostSearch from './components/PostSearch';
+import PostList from './components/PostList.jsx';
+import PostSearch from './components/PostSearch.jsx';
 // TODO: Exercice 3 - Importer ThemeToggle
 // TODO: Exercice 3 - Importer ThemeProvider et useTheme
 // TODO: Exercice 1 - Importer le hook usePosts
+import { usePosts } from './hooks/usePosts.jsx'; 
 // TODO: Exercice 2 - Importer le hook useLocalStorage
 
 function App() {
   // État local pour la recherche
-  const [searchTerm, setSearchTerm] = useState('');
+  const { posts, loading, error, setSearchTerm } = usePosts();
   // TODO: Exercice 4 - Ajouter l'état pour le tag sélectionné
   
   // TODO: Exercice 1 - Utiliser le hook usePosts pour récupérer les posts
@@ -39,11 +40,20 @@ function App() {
         <PostSearch onSearch={handleSearchChange} />
         
         {/* TODO: Exercice 1 - Afficher un message d'erreur si nécessaire */}
-        
+        {error && (
+          <div className="alert alert-danger mt-3">
+            Erreur de chargement : {error}
+          </div>
+        )}
         {/* TODO: Exercice 4 - Ajouter le composant PostDetails */}
         
         {/* TODO: Exercice 1 - Passer les props nécessaires à PostList */}
-        <PostList />
+        
+        <PostList 
+          posts={posts}
+          loading={loading}
+          error={error}
+        />
       </main>
       
       <footer className="pt-3 mt-4 text-center border-top">
