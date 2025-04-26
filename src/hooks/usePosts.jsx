@@ -17,7 +17,9 @@ function usePosts({ searchTerm = '', tag = '', limit = 10, infinite = true } = {
   const [error, setError] = useState(null);
   
   // TODO: Exercice 1 - Ajouter les états nécessaires pour la pagination
-  
+  const [skip, setSkip] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   // TODO: Exercice 4 - Ajouter l'état pour le post sélectionné
   
   // TODO: Exercice 2 - Utiliser useDebounce pour le terme de recherche
@@ -32,7 +34,21 @@ function usePosts({ searchTerm = '', tag = '', limit = 10, infinite = true } = {
   const fetchPosts = async (reset = false) => {
     try {
       setLoading(true);
-      // Appeler l'API et mettre à jour les états
+      const newSkip = reset ? 0 : skip;
+      
+      const response = await fetch(
+        `https://dummyjson.com/posts?limit=${limit}&skip=${newSkip}`
+      );
+      
+      if (!response.ok) throw new Error('Échec du chargement');
+      
+      const data = await response.json();
+      
+      setPosts(prev => reset ? data.posts : [...prev, ...data.posts]);
+      setTotal(data.total);
+      setHasMore(data.posts.length === limit);
+      if (!reset) setSkip(prev => prev + limit);
+      
     } catch (err) {
       setError(err.message);
     } finally {
@@ -41,7 +57,9 @@ function usePosts({ searchTerm = '', tag = '', limit = 10, infinite = true } = {
   };
   
   // TODO: Exercice 1 - Utiliser useEffect pour charger les posts quand les filtres changent
-  
+  useEffect(() => {
+    fetchPosts(true);
+  }, [limit]);
   // TODO: Exercice 4 - Implémenter la fonction pour charger plus de posts
   
   // TODO: Exercice 3 - Utiliser useMemo pour calculer les tags uniques
